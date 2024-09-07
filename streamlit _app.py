@@ -23,6 +23,7 @@ def insert_element():
                 # Conecta a la base de datos
                 conn = get_connection()
                 cursor = conn.cursor()
+                print("hola3")
 
                 # Inserta los datos
                 insert_query = "INSERT INTO mytable (name, pet) VALUES (%s, %s)"
