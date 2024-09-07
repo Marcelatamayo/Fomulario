@@ -78,6 +78,7 @@ def list_elements_button():
             cursor.close()
             conn.close()
             print("hola")
+            print("hola2")
 
 # función inical, se encarga de orquestar la app indicando que metodos se deben renderizar desde el inicio SEGUNDO
 def init_app():
