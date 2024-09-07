@@ -81,10 +81,53 @@ def list_elements_button():
             print("hola")
             print("hola2")
 
+def update_element():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        # Obtener todos los nombres para listar
+        select_query = "SELECT name FROM mytable"
+        cursor.execute(select_query)
+        nombres = cursor.fetchall()
+
+        # Lista desplegable para seleccionar el nombre
+        nombre_seleccionado = st.selectbox("Selecciona el nombre a actualizar", [n[0] for n in nombres])
+
+        # Nuevos valores para actualizar
+        new_pet = st.text_input("Nueva mascota")
+
+        if st.button("Actualizar registro"):
+            if nombre_seleccionado and new_pet:
+                try:
+                    # Consulta de actualización
+                    update_query = "UPDATE mytable SET pet = %s WHERE name = %s"
+                    cursor.execute(update_query, (new_pet, nombre_seleccionado))
+
+                    # Confirma la transacción
+                    conn.commit()
+                    list_elements(cursor, conn)
+                    st.success(f"Registro actualizado exitosamente: {nombre_seleccionado} ahora tiene la mascota {new_pet}")
+                except Exception as e:
+                    st.error(f"Ocurrió un error al actualizar el registro: {e}")
+                finally:
+                    cursor.close()
+                    conn.close()
+            else:
+                st.warning("Por favor, completa todos los campos para actualizar")
+
+    except Exception as e:
+        st.error(f"Ocurrió un error al conectar a la base de datos: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+
 # función inical, se encarga de orquestar la app indicando que metodos se deben renderizar desde el inicio SEGUNDO
 def init_app():
     insert_element()
     list_elements_button()
+    update_element()
    
     
 # Ejecuta las consultas cuando se inicia la aplicación PRIMERO
